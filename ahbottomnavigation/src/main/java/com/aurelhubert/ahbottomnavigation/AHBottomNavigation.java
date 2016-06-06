@@ -90,7 +90,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 	//@U2 custom navigation bar
 	private boolean customImageOnRight = true;
-	private int customImageWidth = 0;
+	private int customImageWidth = 100;
 
 	/**
 	 * Constructors
