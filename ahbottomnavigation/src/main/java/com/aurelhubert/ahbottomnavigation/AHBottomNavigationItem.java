@@ -18,6 +18,11 @@ public class AHBottomNavigationItem {
 	private String title = "";
 	private Drawable drawable;
 	private int color = Color.GRAY;
+	private String notiTitle = "";
+	@ColorInt
+	private int notiTitleColor = Color.RED;
+	@ColorInt
+	private int notiTitleBgColor = Color.WHITE;
 
 	private
 	@StringRes
@@ -127,5 +132,29 @@ public class AHBottomNavigationItem {
 	public void setDrawable(Drawable drawable) {
 		this.drawable = drawable;
 		this.drawableRes = 0;
+	}
+
+	public int getNotiTitleBgColor() {
+		return notiTitleBgColor;
+	}
+
+	public void setNotiTitleBgColor(int notiTitleBgColor) {
+		this.notiTitleBgColor = notiTitleBgColor;
+	}
+
+	public String getNotiTitle() {
+		return notiTitle;
+	}
+
+	public void setNotiTitle(String notiTitle) {
+		this.notiTitle = notiTitle;
+	}
+
+	public int getNotiTitleColor() {
+		return notiTitleColor;
+	}
+
+	public void setNotiTitleColor(int notiTitleColor) {
+		this.notiTitleColor = notiTitleColor;
 	}
 }

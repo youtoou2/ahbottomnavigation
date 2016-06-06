@@ -60,7 +60,6 @@ public class AHBottomNavigation extends FrameLayout {
 	private View backgroundColorView;
 	private Animator circleRevealAnim;
 	private boolean colored = false;
-	private String[] notifications = {"", "", "", "", ""};
 	private boolean isBehaviorTranslationSet = false;
 	private int currentItem = 0;
 	private int currentColor = 0;
@@ -88,6 +87,10 @@ public class AHBottomNavigation extends FrameLayout {
 	private Drawable notificationBackgroundDrawable;
 	private Typeface notificationTypeface;
 	private int notificationActiveMarginLeft, notificationInactiveMarginLeft;
+
+	//@U2 custom navigation bar
+	private boolean customImageOnRight = true;
+	private int customImageWidth = 0;
 
 	/**
 	 * Constructors
@@ -128,7 +131,6 @@ public class AHBottomNavigation extends FrameLayout {
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("superState", super.onSaveInstanceState());
 		bundle.putInt("current_item", currentItem);
-		bundle.putStringArray("notifications", notifications);
 		return bundle;
 	}
 
@@ -137,7 +139,6 @@ public class AHBottomNavigation extends FrameLayout {
 		if (state instanceof Bundle) {
 			Bundle bundle = (Bundle) state;
 			currentItem = bundle.getInt("current_item");
-			notifications = bundle.getStringArray("notifications");
 			state = bundle.getParcelable("superState");
 		}
 		super.onRestoreInstanceState(state);
@@ -356,6 +357,15 @@ public class AHBottomNavigation extends FrameLayout {
 			return;
 		}
 
+		if(customImageWidth>0){
+			layoutWidth -= customImageWidth;
+			if(customImageOnRight){
+				linearLayout.setPadding(0,0,customImageWidth,0);
+			}else{
+				linearLayout.setPadding(customImageWidth,0,0,0);
+			}
+		}
+
 		float itemWidth = layoutWidth / items.size();
 
 		if (itemWidth < minWidth) {
@@ -370,7 +380,6 @@ public class AHBottomNavigation extends FrameLayout {
 		selectedItemWidth = itemWidth + items.size() * difference;
 		itemWidth -= difference;
 		notSelectedItemWidth = itemWidth;
-
 
 		for (int i = 0; i < items.size(); i++) {
 
@@ -684,7 +693,7 @@ public class AHBottomNavigation extends FrameLayout {
 			TextView notification = (TextView) views.get(i).findViewById(R.id.bottom_navigation_notification);
 
 			String currentValue = notification.getText().toString();
-			boolean animate = !currentValue.equals(String.valueOf(notifications[i]));
+			boolean animate = !currentValue.equals(String.valueOf(items.get(i).getNotiTitle()));
 
 			if (updateStyle) {
 				notification.setTextColor(notificationTextColor);
@@ -714,7 +723,7 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 			}
 
-			if (notifications[i].length() == 0 && notification.getText().length() > 0) {
+			if (items.get(i).getNotiTitle().length() == 0 && notification.getText().length() > 0) {
 				notification.setText("");
 				if (animate) {
 					notification.animate()
@@ -725,8 +734,8 @@ public class AHBottomNavigation extends FrameLayout {
 							.setDuration(150)
 							.start();
 				}
-			} else if (notifications[i].length() > 0) {
-				notification.setText(String.valueOf(notifications[i]));
+			} else if (items.get(i).getNotiTitle().length() > 0) {
+				notification.setText(String.valueOf(items.get(i).getNotiTitle()));
 				if (animate) {
 					notification.setScaleX(0);
 					notification.setScaleY(0);
@@ -1101,7 +1110,7 @@ public class AHBottomNavigation extends FrameLayout {
 			Log.w(TAG, "The position is out of bounds of the items (" + items.size() + " elements)");
 			return;
 		}
-		notifications[itemPosition] = nbNotification == 0 ? "" : String.valueOf(nbNotification);
+		items.get(itemPosition).setNotiTitle(nbNotification == 0 ? "" : String.valueOf(nbNotification));
 		updateNotifications(false, itemPosition);
 	}
 
@@ -1112,7 +1121,7 @@ public class AHBottomNavigation extends FrameLayout {
 	 * @param itemPosition int
 	 */
 	public void setNotification(String title, int itemPosition) {
-		notifications[itemPosition] = title;
+		items.get(itemPosition).setNotiTitle(title);
 		updateNotifications(false, itemPosition);
 	}
 
@@ -1206,6 +1215,16 @@ public class AHBottomNavigation extends FrameLayout {
 	public void setUseElevation(boolean useElevation, float elevation) {
 		ViewCompat.setElevation(this, useElevation ? elevation : 0);
 		setClipToPadding(false);
+	}
+
+	public void setCustomImageOnRight(boolean customImageOnRight) {
+		this.customImageOnRight = customImageOnRight;
+		createItems();
+	}
+
+	public void setCustomImageWidth(int customImageWidth) {
+		this.customImageWidth = customImageWidth;
+		createItems();
 	}
 
 	////////////////
